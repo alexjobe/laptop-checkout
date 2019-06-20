@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Laptop Checkout</title>
+  </head>
+  <body>
+      <header>
+          <h1>Laptop Checkout</h1>
+      </header>
+      <form action = "/checkouts" method = "POST">
+				<input type="text" name="checkout[userName]" placeholder="Name">
+				<input type="text" name="checkout[mgrName]" placeholder="Manager Who Approved">
+				Date Checked Out: <input type="date" name="checkout[checkoutDate]">
+				ETA of Return: <input type="date" name="checkout[etaDate]">
+        <input type="text" name="checkout[serialNum]" placeholder="Serial Number">
+        <button>Submit</button>
+			</form>
+			<ul class="list">
+        <% checkouts.forEach(function(checkout){ %>
+          <li>
+            <strong>Name:</strong> <%= checkout.userName %> 
+            <strong>Manager Who Approved:</strong> <%= checkout.mgrName %>
+            <strong>Date Checked Out:</strong> <%= checkout.checkoutDate.toLocaleDateString("en-US") %>
+            <strong>ETA of Return:</strong> <%= checkout.etaDate.toLocaleDateString("en-US") %>
+            <strong>Serial Number:</strong> <%= checkout.serialNum %>
+            <form action = "/checkouts/<%= checkout._id %>?_method=DELETE" method = "POST">
+              <button>Delete</button>
+            </form>
+          </li>
+        <% }); %>
+      </ul>
+  </body>
+</html>
