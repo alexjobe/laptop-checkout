@@ -12,41 +12,11 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 
-// ========== ROUTES ========== //
+// ========== REQUIRE ROUTES ========== //
+var checkoutRoutes = require("./routes/checkout");
 
-// CHECKOUT INDEX - Show all checkouts
-app.get("/", function(req, res){
-    Checkout.find({}, function(err, allCheckouts){
-        if(err){
-            console.log(err);
-        } else {
-            res.render("home", {checkouts: allCheckouts});
-        }
-    });
-});
-
-// CHECKOUT CREATE - Add new checkout to database
-app.post("/checkouts", function(req, res){
-    Checkout.create(req.body.checkout, function(err, addedCheckout){
-        if(err){
-            console.log(err);
-        } else {
-            res.redirect("/");
-        }
-    });
-});
-
-// CHECKOUT DELETE - Remove checkout
-app.delete("/checkouts/:checkout_id", function(req, res){
-    Checkout.findByIdAndRemove(req.params.checkout_id, function(err){
-        if(err){
-            console.log(err);
-            res.redirect("/");
-        } else {
-            res.redirect("/");
-        }
-    });
-});
+// USE ROUTES
+app.use(checkoutRoutes);
 
 // START SERVER
 app.listen(port, "localhost", function(){
