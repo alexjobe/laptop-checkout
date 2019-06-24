@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Laptop Checkout</title>
+  </head>
+  <body>
+      <header>
+          <h1>Edit</h1>
+      </header>
+      <form action = "/checkouts/<%= checkout._id %>?_method=PUT" method = "POST">
+        <input type="text" name="checkout[userName]" value="<%= checkout.userName %>">
+        <input type="text" name="checkout[mgrName]" value="<%= checkout.mgrName %>">
+        Date Checked Out: 
+        <input type="date" name="checkout[checkoutDate]"
+            value="<%= !checkout.checkoutDate ? new Date().toISOString().substring(0, 10) : checkout.checkoutDate.toISOString().substring(0, 10) %>">
+        ETA of Return: 
+        <input type="date" name="checkout[etaDate]"
+            value="<%= !checkout.etaDate ? new Date().toISOString().substring(0, 10) : checkout.etaDate.toISOString().substring(0, 10) %>">
+        <input type="text" name="checkout[serialNum]" value="<%= checkout.serialNum %>">
+        <button>Submit</button>
+	</form>
+  </body>
+</html>

@@ -12,11 +12,17 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 
+// INDEX
+app.get("/", function(req, res){
+    res.redirect("/checkouts");
+});
+
 // ========== REQUIRE ROUTES ========== //
+
 var checkoutRoutes = require("./routes/checkout");
 
 // USE ROUTES
-app.use(checkoutRoutes);
+app.use("/checkouts", checkoutRoutes);
 
 // START SERVER
 app.listen(port, "localhost", function(){
