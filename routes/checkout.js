@@ -24,7 +24,7 @@ router.post("/", function(req, res){
         if(err){
             console.log(err);
         } else {
-            res.redirect("/");
+            res.redirect("back");
         }
     });
 });
@@ -45,9 +45,9 @@ router.put("/:checkout_id", function(req, res){
     Checkout.findByIdAndUpdate(req.params.checkout_id, req.body.checkout, function(err, updatedCheckout){
         if(err){
             console.log(err);
-            res.redirect("back");
+            res.redirect("/");
         } else {
-            res.redirect("/checkouts");
+            res.redirect("/");
         }
     });
 });
@@ -57,7 +57,7 @@ router.delete("/:checkout_id", function(req, res){
     Checkout.findByIdAndRemove(req.params.checkout_id, function(err){
         if(err){
             console.log(err);
-            res.redirect("/");
+            res.redirect("back");
         } else {
             res.redirect("/");
         }

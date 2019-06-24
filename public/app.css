@@ -1,0 +1,18 @@
+body {
+    background: #ecf0f1;
+    color: #2c3e50;
+    font-size: 20px;
+}
+
+li {
+    margin: 10px;
+}
+
+li:hover {
+    background: rgba(0, 0, 0, .02);
+	cursor: pointer;
+}
+
+strong {
+    margin: 10px;
+}

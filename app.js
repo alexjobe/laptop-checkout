@@ -11,6 +11,8 @@ mongoose.connect('mongodb://localhost/laptop-checkout-api');
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
+app.use(express.static(__dirname + '/views'));
+app.use(express.static(__dirname + '/public'));
 
 // INDEX
 app.get("/", function(req, res){

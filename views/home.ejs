@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <base href="/">
+    <link rel="stylesheet" href="app.css" type="text/css" />
     <title>Laptop Checkout</title>
   </head>
   <body>
@@ -10,27 +12,32 @@
       </header>
       <form action = "/checkouts" method = "POST">
 				<input type="text" name="checkout[userName]" placeholder="Name">
-				<input type="text" name="checkout[mgrName]" placeholder="Manager Who Approved">
-				Date Checked Out: <input type="date" name="checkout[checkoutDate]" value="<%= new Date().toISOString().substring(0, 10) %>">
-				ETA of Return: <input type="date" name="checkout[etaDate]" value="<%= new Date().toISOString().substring(0, 10) %>">
+        <input type="text" name="checkout[mgrName]" placeholder="Manager Who Approved">
+
+        <!-- A variable to hold the current date -->
+        <% currentDate = new Date().toISOString().substring(0, 10) %>
+
+        <!-- Initialize with the current date -->
+        Date Checked Out: <input type="date" name="checkout[checkoutDate]" value="<%= currentDate %>">
+        <!-- Initialize with the current date -->
+        ETA of Return: <input type="date" name="checkout[etaDate]" value="<%= currentDate %>">
+        
         <input type="text" name="checkout[serialNum]" placeholder="Serial Number">
         <button>Submit</button>
-			</form>
+      </form>
 			<ul class="list">
         <% checkouts.forEach(function(checkout){ %>
-          <li>
-            <strong>Name:</strong> <%= !checkout.userName ? "N/A" : checkout.userName %> 
-            <strong>Manager Who Approved:</strong> <%= !checkout.mgrName ? "N/A" : checkout.mgrName %>
-            <strong>Date Checked Out:</strong> <%= !checkout.checkoutDate ? "N/A" : checkout.checkoutDate.toLocaleDateString("en-US", { timeZone: 'UTC' }) %>
-            <strong>ETA of Return:</strong> <%= !checkout.etaDate ? "N/A" : checkout.etaDate.toLocaleDateString("en-US", { timeZone: 'UTC' }) %>
-            <strong>Serial Number:</strong> <%= !checkout.serialNum ? "N/A" : checkout.serialNum %>
-            <form action = "/checkouts/<%= checkout._id %>?_method=DELETE" method = "POST">
-              <button>Delete</button>
-            </form>
-            <form action = "/checkouts/<%= checkout._id %>/edit" method = "GET">
+          <form action = "/checkouts/<%= checkout._id %>/edit" method = "GET">
+            <li>
+              <strong>Name:</strong> <%= !checkout.userName ? "N/A" : checkout.userName %> 
+              <strong>Manager Who Approved:</strong> <%= !checkout.mgrName ? "N/A" : checkout.mgrName %>
+              <strong>Date Checked Out:</strong> <%= !checkout.checkoutDate ? "N/A" : checkout.checkoutDate.toLocaleDateString("en-US", { timeZone: 'UTC' }) %>
+              <strong>ETA of Return:</strong> <%= !checkout.etaDate ? "N/A" : checkout.etaDate.toLocaleDateString("en-US", { timeZone: 'UTC' }) %>
+              <strong>Serial Number:</strong> <%= !checkout.serialNum ? "N/A" : checkout.serialNum %>
+              <strong>Returned:</strong> <%= !checkout.wasReturned ? "No" : "Yes" %>
               <button>Edit</button>
-            </form>
-          </li>
+            </li>
+          </form>
         <% }); %>
       </ul>
   </body>

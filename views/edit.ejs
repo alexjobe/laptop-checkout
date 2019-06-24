@@ -2,6 +2,8 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <base href="/">
+    <link rel="stylesheet" href="app.css" type="text/css" />
     <title>Laptop Checkout</title>
   </head>
   <body>
@@ -9,16 +11,30 @@
           <h1>Edit</h1>
       </header>
       <form action = "/checkouts/<%= checkout._id %>?_method=PUT" method = "POST">
-        <input type="text" name="checkout[userName]" value="<%= checkout.userName %>">
-        <input type="text" name="checkout[mgrName]" value="<%= checkout.mgrName %>">
+        <input type="text" name="checkout[userName]" placeholder="Name" value="<%= checkout.userName %>">
+        <input type="text" name="checkout[mgrName]" placeholder="Manager Who Approved" value="<%= checkout.mgrName %>">
+
+        <!-- A variable to hold the current date -->
+        <% currentDate = new Date().toISOString().substring(0, 10) %>
+
         Date Checked Out: 
+        <!-- If there is no saved checkout date, use the current date -->
         <input type="date" name="checkout[checkoutDate]"
-            value="<%= !checkout.checkoutDate ? new Date().toISOString().substring(0, 10) : checkout.checkoutDate.toISOString().substring(0, 10) %>">
+            value="<%= !checkout.checkoutDate ? currentDate : checkout.checkoutDate.toISOString().substring(0, 10) %>">
+
         ETA of Return: 
+        <!-- If there is no saved eta date, use the current date -->
         <input type="date" name="checkout[etaDate]"
-            value="<%= !checkout.etaDate ? new Date().toISOString().substring(0, 10) : checkout.etaDate.toISOString().substring(0, 10) %>">
-        <input type="text" name="checkout[serialNum]" value="<%= checkout.serialNum %>">
+            value="<%= !checkout.etaDate ? currentDate : checkout.etaDate.toISOString().substring(0, 10) %>">
+
+        <input type="text" name="checkout[serialNum]" placeholder="Serial Number" value="<%= checkout.serialNum %>">
+        Returned:
+        <input type="radio" name="checkout[wasReturned]" value="true">Yes
+        <input type="radio" name="checkout[wasReturned]" value="false">No
         <button>Submit</button>
-	</form>
+  </form>
+  <form action = "/checkouts/<%= checkout._id %>?_method=DELETE" method = "POST">
+    <button>Delete</button>
+  </form>
   </body>
 </html>
