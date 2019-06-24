@@ -8,8 +8,17 @@ li {
     margin: 10px;
 }
 
-li:hover {
+.checkout:hover {
     background: rgba(0, 0, 0, .02);
+	cursor: pointer;
+}
+
+.overdue {
+    background: red;
+}
+
+.overdue:hover {
+    background: rgba(255, 112, 112, 1);
 	cursor: pointer;
 }
 

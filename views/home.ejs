@@ -27,7 +27,7 @@
       </form>
 			<ul class="list">
         <% checkouts.forEach(function(checkout){ %>
-          <form action = "/checkouts/<%= checkout._id %>/edit" method = "GET">
+          <form class="checkout" action = "/checkouts/<%= checkout._id %>/edit" method = "GET" data-etadate = "<%= checkout.etaDate.toISOString().substring(0, 10) %>" data-checkid = <%= checkout._id %> data-returned = <%= checkout.wasReturned %>>
             <li>
               <strong>Name:</strong> <%= !checkout.userName ? "N/A" : checkout.userName %> 
               <strong>Manager Who Approved:</strong> <%= !checkout.mgrName ? "N/A" : checkout.mgrName %>
@@ -35,10 +35,10 @@
               <strong>ETA of Return:</strong> <%= !checkout.etaDate ? "N/A" : checkout.etaDate.toLocaleDateString("en-US", { timeZone: 'UTC' }) %>
               <strong>Serial Number:</strong> <%= !checkout.serialNum ? "N/A" : checkout.serialNum %>
               <strong>Returned:</strong> <%= !checkout.wasReturned ? "No" : "Yes" %>
-              <button>Edit</button>
             </li>
           </form>
         <% }); %>
       </ul>
+      <script type="text/javascript" src="app.js"></script>
   </body>
 </html>
