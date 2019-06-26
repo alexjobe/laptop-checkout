@@ -4,10 +4,20 @@ var mongoose = require("mongoose");
 var checkoutSchema = new mongoose.Schema({
     userName: String,
     mgrName: String,
-    checkoutDate: Date,
-    etaDate: Date,
-    serialNum: String,
-    wasReturned: {type: Boolean, default: false}
+    checkoutDate: {
+        type: Date,
+        default: Date.now
+    },
+    dueDate: {
+        type: Date,
+        default: Date.now
+    },
+    laptop: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Laptop"
+    }
 });
 
-module.exports = mongoose.model("Checkout", checkoutSchema);
+var Checkout = mongoose.model('Checkout', checkoutSchema);
+
+module.exports = Checkout;
