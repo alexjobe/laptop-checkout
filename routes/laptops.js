@@ -31,6 +31,7 @@ router.post("/", function(req, res){
 
 // LAPTOP GET - Get a single laptop
 router.get("/:laptopId", function(req, res){
+    // Mongo populates currentCheckout based on ObjectID
     db.Laptop.findById(req.params.laptopId).populate('currentCheckout')
     .then(function(foundLaptop){
         res.json(foundLaptop);
@@ -42,7 +43,8 @@ router.get("/:laptopId", function(req, res){
 
 // LAPTOP UPDATE - Update a laptop
 router.put("/:laptopId", function(req, res){
-    db.Laptop.findOneAndUpdate({_id: req.params.laptopId}, req.body, {new: true}) // {new: true} respond with updated data
+    // Mongo populates currentCheckout based on ObjectID
+    db.Laptop.findOneAndUpdate({_id: req.params.laptopId}, req.body, {new: true}).populate('currentCheckout') // {new: true} respond with updated data
     .then(function(laptop){
         res.json(laptop);
     })

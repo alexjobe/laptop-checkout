@@ -2,6 +2,10 @@ $(document).ready(function(){
     $.getJSON("/api/laptops")
     .then(addLaptops);
 
+    $('#laptopInput').submit(function (e) {
+        e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
+    });
+
     $('#laptopInput').submit(function(event){
         createLaptop();
     });
