@@ -1,9 +1,9 @@
 var laptopId;
 
 $(document).ready(function(){
-    laptopId = $('#checkoutInput').attr("data-laptop");
+    laptopId = $('body').attr("data-laptop");
     $.getJSON("/api/laptops/" + laptopId)
-    .then(addCheckouts);
+    .then(addCheckout);
     
     $('#checkoutInput').submit(function(event){
         createCheckout();
@@ -18,17 +18,26 @@ function createCheckout() {
 
     $.post('/api/checkouts', {userName: userNameInput, mgrName: mgrNameInput, dueDate: dueDateInput, laptop: laptopId})
     .then(function(newCheckout){
-        addCheckout(newCheckout);
-    }).catch(function(err){
+        return $.ajax({
+            method: 'PUT',
+            url: '/api/laptops/' + laptopId,
+            data: {currentCheckout: newCheckout._id}
+        });
+    })
+    .then(function(updatedLaptop){
+        addCheckout(updatedLaptop);
+    })
+    .catch(function(err){
         console.log(err);
     });
 }
 
-function addCheckouts(laptop) {
-    $.getJSON("/api/checkouts/" + laptop.currentCheckout)
-    .then(addCheckout)
-}
-
-function addCheckout(checkout) {
-    $('#currentCheckout').html('Name: ' + checkout.userName);
+function addCheckout(laptop) {
+    console.log(laptop);
+    if(laptop.currentCheckout){
+        var dueDate = new Date(laptop.currentCheckout.dueDate);
+        $('#currentCheckout').html('Name: ' + laptop.currentCheckout.userName + 
+        '<br>Manager Who Approved: ' + laptop.currentCheckout.mgrName +
+        '<br>Due Date: ' + dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' }));
+    }
 }

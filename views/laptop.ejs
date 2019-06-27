@@ -11,14 +11,14 @@
 		</script>
     <title>Laptop Checkout</title>
   </head>
-  <body>
+  <body data-laptop = <%= laptop._id %>>
 		<header>
 				<h1><%= laptop.name %></h1>
     </header>
     
     <div id="currentCheckout"></div>
 
-		<form id="checkoutInput" data-laptop = <%= laptop._id %>>
+		<form id="checkoutInput">
 			<input id="userNameInput" type="text" placeholder="Name">
       <input id="mgrNameInput" type="text" placeholder="Manager Who Approved">
       <input id="dueDateInput" type="date" placeholder="Due Date">

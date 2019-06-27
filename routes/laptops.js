@@ -31,7 +31,7 @@ router.post("/", function(req, res){
 
 // LAPTOP GET - Get a single laptop
 router.get("/:laptopId", function(req, res){
-    db.Laptop.findById(req.params.laptopId)
+    db.Laptop.findById(req.params.laptopId).populate('currentCheckout')
     .then(function(foundLaptop){
         res.json(foundLaptop);
     })
