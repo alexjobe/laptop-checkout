@@ -1,19 +1,32 @@
 var laptopId; // A variable to hold the currently selected laptopId
 
 $(document).ready(function(){
-    
-    loadLaptopsView();
 
-    loadCheckoutView();
+    disableBackButton();
+    
+    // Create views
+    createLaptopsView();
+    createCheckoutView();
+
+    // Load laptops view
+    loadLaptopsView();
 
 });
 
+// Disables browser back button
+function disableBackButton() {
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = function () {
+        window.history.pushState(null, "", window.location.href);
+    };
+}
+
 // Main view - Displays a list of all laptops
-function loadLaptopsView() {
+function createLaptopsView() {
     $.getJSON("/api/laptops")
         .then(addAllLaptops);
 
-    $('#checkout-view').hide(); // Hide checkout view when in laptop view
+    loadLaptopsView();
 
     $('#laptopInput').submit(function (e) {
         e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
@@ -27,14 +40,33 @@ function loadLaptopsView() {
 }
 
 // Checkout view - Displays checkout information for a single laptop
-function loadCheckoutView() {
+function createCheckoutView() {
+    $('#home-button').submit(function (e) {
+        e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
+        loadLaptopsView();
+    });
     $('#checkoutInput').submit(function (e) {
         e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
     });
+
     $('#checkoutInput').submit(function (event) {
         createCheckout();
     });
 }
+
+function loadLaptopsView() {
+    $('#laptop-view').show();
+    $('#checkout-view').hide();
+}
+
+function loadCheckoutView() {
+    $('#laptop-view').hide();
+    $('#checkout-view').show();
+}
+
+// ----------------------------------------------- //
+// ----------- Laptop View Functions ------------- //
+// ----------------------------------------------- //
 
 function addAllLaptops(laptops) {
     // Add all laptops to the page
@@ -72,17 +104,17 @@ function addLaptopClickHandlers() {
     $('.laptop-list').on('click', 'li', function () {
         laptopId = $(this).data('id'); // Set laptopId to the selected laptop's id
 
-        // When a laptop is clicked, hide laptop view and load checkout view for that laptop
-        $('#laptop-view').hide();
-        $('#checkout-view').show();
+        // When a laptop is clicked, load checkout view
+        loadCheckoutView();
 
         // Display current checkout of clicked laptop
         $.getJSON("/api/laptops/" + laptopId)
         .then(updateCurrentCheckout);
     });
 }
-
-// Checkout Functions
+// ----------------------------------------------- //
+// ----------- Checkout View Functions ----------- //
+// ----------------------------------------------- //
 
 function createCheckout() {
     // Send request to create a new checkout
@@ -111,13 +143,15 @@ function createCheckout() {
 
 function updateCurrentCheckout(laptop) {
 
-    $('h1').html('Laptop: ' + laptop.name);
+    $('#checkout-view h1').html('Laptop: ' + laptop.name);
 
     // Add current checkout to the page, if there is one: otherwise, display "Available".
     if(laptop.currentCheckout){
         var dueDate = new Date(laptop.currentCheckout.dueDate);
+        var checkoutDate = new Date(laptop.currentCheckout.checkoutDate);
         $('#currentCheckout').html('Name: ' + laptop.currentCheckout.userName + 
         '<br>Manager Who Approved: ' + laptop.currentCheckout.mgrName +
+        '<br>Checkout Date: ' + checkoutDate.toLocaleDateString('en-US', { timeZone: 'UTC' }) +
         '<br>Due Date: ' + dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' }));
     }
     else{

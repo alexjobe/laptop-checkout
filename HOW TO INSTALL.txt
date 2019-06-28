@@ -1,0 +1,13 @@
+How To Install
+
+Install NodeJS
+	https://nodejs.org/en/download/
+
+Install MongoDB
+	https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#install-mdb-edition
+
+Run commands in root folder:
+	npm install
+	node index.js
+
+Connect to localhost:3000 in browser
