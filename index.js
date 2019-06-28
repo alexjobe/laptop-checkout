@@ -4,19 +4,18 @@ var express = require('express'),
     methodOverride = require("method-override"),
     port = 3000
 
-// ========== REQUIRE ROUTES ========== //
-
-var indexRoutes = require("./routes/index");
-var laptopRoutes = require("./routes/laptops");
-var checkoutRoutes = require("./routes/checkouts");
-
 // APP CONFIG
-app.set("view engine", "ejs");
 app.use(bodyParser.json()); // Required for POST routes
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.use(express.static(__dirname + '/views'));
 app.use(express.static(__dirname + '/public'));
+
+// ========== REQUIRE ROUTES ========== //
+
+var indexRoutes = require("./routes/index");
+var laptopRoutes = require("./routes/laptops");
+var checkoutRoutes = require("./routes/checkouts");
 
 // USE ROUTES
 app.use('/', indexRoutes);
