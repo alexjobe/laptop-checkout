@@ -9,7 +9,7 @@ var express = require('express'),
 
 // LAPTOP INDEX - Get all laptops
 router.get("/", function(req, res){
-    db.Laptop.find()
+    db.Laptop.find().populate('currentCheckout')
     .then(function(laptops){ // Promise instead of typical callback
         res.json(laptops);
     })
