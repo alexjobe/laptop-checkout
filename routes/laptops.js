@@ -46,6 +46,8 @@ router.put("/:laptopId", function(req, res){
     // Mongo populates currentCheckout based on ObjectID
     db.Laptop.findOneAndUpdate({_id: req.params.laptopId}, req.body, {new: true}).populate('currentCheckout') // {new: true} respond with updated data
     .then(function(laptop){
+        laptop.checkoutHistory.push(req.body.currentCheckout); // Add checkout to checkoutHistory array
+        laptop.save(); // Save the laptop because we updated checkoutHistory
         res.json(laptop);
     })
     .catch(function(err){
@@ -55,7 +57,14 @@ router.put("/:laptopId", function(req, res){
 
 // LAPTOP DELETE - Delete a laptop
 router.delete("/:laptopId", function(req, res){
-    db.Laptop.remove({_id: req.params.laptopId})
+
+    db.Laptop.findById(req.params.laptopId)
+    .then(function(foundLaptop){
+        return db.Checkout.deleteMany({'_id':{'$in':foundLaptop.checkoutHistory}}); // Delete all checkouts associated with this laptop
+    })
+    .then(function(){
+        return db.Laptop.deleteOne({_id: req.params.laptopId});
+    })
     .then(function(){
         res.json({message: 'Deletion success'});
     })

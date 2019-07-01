@@ -14,7 +14,13 @@ var laptopSchema = new mongoose.Schema({
     currentCheckout: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Checkout"
-    }
+    },
+    checkoutHistory: [
+        {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Checkout"
+        }
+    ]
 });
 
 var Laptop = mongoose.model('Laptop', laptopSchema);

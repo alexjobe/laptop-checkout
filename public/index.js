@@ -3,13 +3,14 @@ var laptopId; // A variable to hold the currently selected laptopId
 $(document).ready(function(){
 
     disableBackButton();
-    
-    // Create views
-    loadLaptopsView();
-    loadCheckoutView();
 
     // Show laptops view
     showLaptopsView();
+    
+    // Create views
+    initializeLaptopsView();
+    initializeCheckoutView();
+
 });
 
 // Disables browser back button
@@ -21,7 +22,7 @@ function disableBackButton() {
 }
 
 // Main view - Displays a list of all laptops
-function loadLaptopsView() {
+function initializeLaptopsView() {
     updateAllLaptops();
 
     $('#laptopInput').submit(function (e) {
@@ -36,7 +37,7 @@ function loadLaptopsView() {
 }
 
 // Checkout view - Displays checkout information for a single laptop
-function loadCheckoutView() {
+function initializeCheckoutView() {
     $('#home-button').submit(function (e) {
         e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
         showLaptopsView();
@@ -44,6 +45,19 @@ function loadCheckoutView() {
     $('#checkoutInput').submit(function (e) {
         e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
         createCheckout();
+    });
+    $('#delete-button').submit(function (e) {
+        e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
+        var deleteURL = '/api/laptops/' + laptopId;
+        $.ajax({
+            url: deleteURL,
+            type: 'DELETE'
+        })
+        .then(function(){
+            updateAllLaptops();
+            showLaptopsView();
+        });
+
     });
 }
 

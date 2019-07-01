@@ -53,7 +53,7 @@ router.put("/:checkoutId", function(req, res){
 
 // CHECKOUT DELETE - Delete a checkout
 router.delete("/:checkoutId", function(req, res){
-    db.Checkout.remove({_id: req.params.checkoutId})
+    db.Checkout.deleteOne({_id: req.params.checkoutId})
     .then(function(){
         res.json({message: 'Deletion success'});
     })
