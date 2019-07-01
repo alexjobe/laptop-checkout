@@ -2,9 +2,9 @@
   "name": "laptop-check-out",
   "version": "1.0.0",
   "description": "An app that tracks laptop usage, including the user it is checked out to, the manager who approved the check out, an ETA of return, the serial number, and whether the laptop was returned.",
-  "main": "app.js",
+  "main": "main.js",
   "scripts": {
-    "start": "node ."
+    "start": "electron ."
   },
   "author": "Alex Jobe",
   "license": "ISC",

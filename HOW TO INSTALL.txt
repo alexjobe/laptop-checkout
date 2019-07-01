@@ -6,7 +6,7 @@ Install NodeJS
 Install MongoDB
 	https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#install-mdb-edition
 
-Run commands in root folder:
+Run commands in root folder (you may need to update PATH to include nodejs):
 	npm install
 	node index.js
 

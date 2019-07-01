@@ -12,37 +12,43 @@
     <title>Laptop Checkout</title>
   </head>
   <body>
-		<section id="laptop-view">
-			<h1>Laptop Checkout</h1>
-			<ul id="laptop-list"></ul>
+    <section id="laptopView">
+      <h1>Laptop Checkout</h1>
+      <ul id="laptopList"></ul>
 
-			<form id="laptopInput">
-				<input id="laptopNameInput" type="text" placeholder="Name">
-				<input id="laptopNumInput" type="number" placeholder="Serial Number">
-				<button>Add Laptop</button>
-			</form>
-		</section>
+      <form id="laptopInput">
+        <input id="laptopNameInput" type="text" placeholder="Name">
+        <input id="laptopNumInput" type="number" placeholder="Serial Number">
+        <button>Add Laptop</button>
+      </form>
+    </section>
 
-		<section id="checkout-view">
-			<form id="home-button">
-				<button>Home</button>
-			</form>
+    <section id="checkoutView">
+      <form id="home-button">
+        <button>Home</button>
+      </form>
 
-			<h1></h1>
+      <h1></h1>
 
-			<div id="currentCheckout"></div>
+      <div id="currentCheckout"></div>
 
-			<form id="checkoutInput">
-				<input id="userNameInput" type="text" placeholder="Name">
-				<input id="mgrNameInput" type="text" placeholder="Manager Who Approved">
-				<input id="dueDateInput" type="date" placeholder="Due Date">
-				<button>Check out</button>
-			</form>
+      <form id="checkoutInput">
+        <input id="userNameInput" type="text" placeholder="Name">
+        <input id="mgrNameInput" type="text" placeholder="Manager Who Approved">
+        <input id="dueDateInput" type="date" placeholder="Due Date">
+        <button>Check out</button>
+      </form>
 
-			<form id="delete-button">
-				<button>Delete Laptop</button>
-			</form>
-		</section>
+      <form id="returnButton">
+        <button>Return Laptop</button>
+      </form>
+
+      <form id="deleteButton">
+        <button>Delete Laptop</button>
+      </form>
+
+      <ul id="checkoutList"></ul>
+    </section>
 
     <script type="text/javascript" src="index.js"></script>
   </body>

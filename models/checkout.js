@@ -15,6 +15,9 @@ var checkoutSchema = new mongoose.Schema({
     laptop: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Laptop"
+    },
+    returnDate: {
+        type: Date
     }
 });
 
