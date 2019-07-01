@@ -6,6 +6,7 @@ $(document).ready(function(){
     
     // Create views
     loadLaptopsView();
+    loadCheckoutView();
 
     // Show laptops view
     showLaptopsView();
@@ -108,7 +109,6 @@ function addLaptopClickHandlers() {
         laptopId = $(this).data('id'); // Set laptopId to the selected laptop's id
 
         // When a laptop is clicked, load checkout view
-        loadCheckoutView();
         showCheckoutView();
 
         // Display current checkout of clicked laptop
