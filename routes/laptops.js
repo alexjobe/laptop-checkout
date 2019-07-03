@@ -32,7 +32,7 @@ router.post("/", function(req, res){
 // LAPTOP GET - Get a single laptop
 router.get("/:laptopId", function(req, res){
     // Mongo populates currentCheckout based on ObjectID
-    db.Laptop.findById(req.params.laptopId).populate('currentCheckout').populate('checkoutHistory')
+    db.Laptop.findById(req.params.laptopId).populate('currentCheckout')
     .then(function(foundLaptop){
         res.json(foundLaptop);
     })
@@ -45,10 +45,24 @@ router.get("/:laptopId", function(req, res){
 router.get("/:laptopId/history", function(req, res){
     // Mongo populates currentCheckout based on ObjectID
     db.Laptop.findById(req.params.laptopId).populate('checkoutHistory')
-    .then(function(foundLaptop){
-        res.send(foundLaptop.checkoutHistory);
+    .then(function(laptop){
+        res.send(laptop.checkoutHistory);
     })
     .catch(function(err) {
+        res.send(err);
+    });
+});
+
+// LAPTOP UPDATE HISTORY - Update a laptop's history
+router.put("/:laptopId/history", function(req, res){
+    // Mongo populates currentCheckout based on ObjectID
+    db.Laptop.findOneAndUpdate({_id: req.params.laptopId}, req.body, {new: true})
+    .then(function(laptop){
+        laptop.checkoutHistory = req.body.checkoutHistory;
+        laptop.save();
+        res.json(laptop);
+    })
+    .catch(function(err){
         res.send(err);
     });
 });

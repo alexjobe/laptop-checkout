@@ -63,6 +63,11 @@ function initializeCheckoutView() {
         e.preventDefault();
         returnLaptop();
     });
+
+    $('ul').on('click', 'span', function(event){
+        event.stopPropagation(); // If user clicks on span, do not trigger click on li
+        removeCheckoutFromHistory($(this).parent());
+    });
 }
 
 function showLaptopsView() {
@@ -232,14 +237,16 @@ function updateCheckoutHistory() {
     $.get(getURL)
     .then(function(checkoutHistory){
         checkoutHistory.forEach(function(checkout){
-            addCheckout(checkout);
+            addCheckoutToHistory(checkout);
         });
     })
 }
 
-function addCheckout(checkout) {
+function addCheckoutToHistory(checkout) {
     // Add a checkout to the page
     if(checkout.returnDate) {
+
+        // Convert mongoDB dates to Date, and format string as M/D/Y
         var returnDate = new Date(checkout.returnDate);
         returnDate = returnDate.toLocaleDateString('en-US', { timeZone: 'UTC' });
         var checkoutDate = new Date(checkout.checkoutDate);
@@ -247,13 +254,55 @@ function addCheckout(checkout) {
         var dueDate = new Date(checkout.dueDate);
         dueDate = dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' });
 
+        // Create <li> to display checkout
         var newCheckout = $('<li class="checkout"><strong>Name: </strong> ' 
             + checkout.userName + ' <strong>Approved By: </strong> ' 
             + checkout.mgrName + '<strong>Checked Out: </strong>' 
             + checkoutDate + '<strong>Due: </strong>' 
             + dueDate + '<strong>Returned: </strong>'
-            + returnDate + '</li>');
+            + returnDate + '<span>X</span></li>');
+
+            newCheckout.data('id', checkout._id); // jQuery data attribute, does not show up in html
 
         $('#checkoutList').append(newCheckout);
     }
+}
+
+function removeCheckoutFromHistory(checkout) {
+    var clickedId = checkout.data('id');
+    var deleteURL = '/api/checkouts/' + clickedId;
+    var historyURL = '/api/laptops/' + laptopId + '/history';
+
+    $.getJSON(historyURL)
+    .then(function(checkoutHistory){
+        updatedHistory = checkoutHistory.filter(function(checkout) {
+            if(checkout._id == clickedId) {
+                return false;
+            }
+            else { return true; }
+        });
+        console.log(updatedHistory);
+        return updatedHistory;
+    })
+    .then(function(checkoutHistory) {
+        if(checkoutHistory == []){checkoutHistory = Array[null]}
+        return $.ajax({
+            url: historyURL,
+            type: 'PUT',
+            data: {checkoutHistory: checkoutHistory}
+        });
+    })
+    .then(function(){
+        return $.ajax({
+            url: deleteURL,
+            type: 'DELETE'
+        })
+    })
+    .then(function(){
+        updateCheckoutHistory();
+    })
+    .catch(function(err){
+        console.log(err);
+    });
+    
 }
