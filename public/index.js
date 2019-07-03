@@ -34,6 +34,11 @@ function initializeLaptopsView() {
         createLaptop();
     });
 
+    $('#laptopList').on('click', 'span', function(event){
+        event.stopPropagation(); // If user clicks on span, do not trigger click on li
+        removeLaptop($(this).parent());
+    });
+
     addLaptopClickHandlers();
 }
 
@@ -43,28 +48,18 @@ function initializeCheckoutView() {
         e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
         showLaptopsView();
     });
+    
     $('#checkoutInput').submit(function (e) {
         e.preventDefault();
         createCheckout();
     });
-    $('#deleteButton').submit(function (e) {
-        e.preventDefault();
-        var deleteURL = '/api/laptops/' + laptopId;
-        $.ajax({
-            url: deleteURL,
-            type: 'DELETE'
-        })
-        .then(function(){
-            updateAllLaptops();
-            showLaptopsView();
-        });
-    });
+
     $('#returnButton').submit(function (e) {
         e.preventDefault();
         returnLaptop();
     });
 
-    $('ul').on('click', 'span', function(event){
+    $('#checkoutList').on('click', 'span', function(event){
         event.stopPropagation(); // If user clicks on span, do not trigger click on li
         removeCheckoutFromHistory($(this).parent());
     });
@@ -78,6 +73,19 @@ function showLaptopsView() {
 function showCheckoutView() {
     $('#laptopView').hide();
     $('#checkoutView').show();
+}
+
+function removeLaptop(laptop) {
+    var clickedId = laptop.data('id');
+    var deleteURL = '/api/laptops/' + clickedId;
+    $.ajax({
+        url: deleteURL,
+        type: 'DELETE'
+    })
+    .then(function(){
+        updateAllLaptops();
+        showLaptopsView();
+    });
 }
 
 // ----------------------------------------------- //
@@ -99,7 +107,7 @@ function addLaptop(laptop) {
     // Add a laptop to the page
     var newLaptop = $('<li class="laptop"><strong>Laptop:</strong> ' 
         + laptop.name + ' <strong>Serial Number:</strong> ' 
-        + laptop.serialNum + '</li>');
+        + laptop.serialNum + '<span>X</span></li>');
 
     if(laptop.currentCheckout){
         var dueDate = new Date(laptop.currentCheckout.dueDate);
@@ -236,9 +244,15 @@ function updateCheckoutHistory() {
     var getURL = '/api/laptops/' + laptopId + '/history';
     $.get(getURL)
     .then(function(checkoutHistory){
+        $('#checkoutHistoryTitle').html('Checkout History');
         checkoutHistory.forEach(function(checkout){
             addCheckoutToHistory(checkout);
         });
+        if($('#checkoutList li').length > 0){
+            $('#checkoutHistoryTitle').html('Checkout History');
+        } else {
+            $('#checkoutHistoryTitle').html('');
+        }
     })
 }
 
