@@ -1,4 +1,5 @@
 var laptopId; // A variable to hold the currently selected laptopId
+var currentLaptop;
 
 $(document).ready(function(){
 
@@ -166,6 +167,7 @@ function createCheckout() {
 function updateCurrentCheckout(laptop) {
 
     $('#checkoutView h1').html('Laptop: ' + laptop.name);
+    updateCheckoutHistory();
 
     // Add current checkout to the page, if there is one: otherwise, display "Available".
     if(laptop.currentCheckout){
@@ -189,8 +191,8 @@ function showAsCheckedOut(laptop) {
     var dueDate = new Date(laptop.currentCheckout.dueDate);
     var checkoutDate = new Date(laptop.currentCheckout.checkoutDate);
     $('#currentCheckout').html('Name: ' + laptop.currentCheckout.userName + 
-    '<br>Manager Who Approved: ' + laptop.currentCheckout.mgrName +
-    '<br>Checkout Date: ' + checkoutDate.toLocaleDateString('en-US', { timeZone: 'UTC' }) +
+    '<br>Approved By: ' + laptop.currentCheckout.mgrName +
+    '<br>Checked Out: ' + checkoutDate.toLocaleDateString('en-US', { timeZone: 'UTC' }) +
     '<br>Due Date: ' + dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' }));
 }
 
@@ -208,12 +210,14 @@ function returnLaptop() {
         })
     })
     .then(function(laptop){
-        updateCurrentCheckout(laptop);
         updateURL = '/api/checkouts/' + currentCheckout;
         return $.ajax({
             url: updateURL,
             type: 'PUT',
             data: {returnDate: Date.now()}
+        })
+        .then(function(){
+            updateCurrentCheckout(laptop);
         })
     })
     .catch(function(err){
@@ -221,19 +225,35 @@ function returnLaptop() {
     });
 }
 
-function updateCheckoutHistory(laptop) {
+function updateCheckoutHistory() {
     $('#checkoutList').html('');
     // Add all checkouts to the page
-    laptop.checkoutHistory.forEach(function(checkout){
-        addLaptop(checkout);
-    });
+    var getURL = '/api/laptops/' + laptopId + '/history';
+    $.get(getURL)
+    .then(function(checkoutHistory){
+        checkoutHistory.forEach(function(checkout){
+            addCheckout(checkout);
+        });
+    })
 }
 
 function addCheckout(checkout) {
     // Add a checkout to the page
-    var newCheckout = $('<li class="checkout"><strong>Name: </strong> ' 
-        + checkout.userName + ' <strong>Manager Who Approved: </strong> ' 
-        + checkout.mgrName + '</li>');
+    if(checkout.returnDate) {
+        var returnDate = new Date(checkout.returnDate);
+        returnDate = returnDate.toLocaleDateString('en-US', { timeZone: 'UTC' });
+        var checkoutDate = new Date(checkout.checkoutDate);
+        checkoutDate = checkoutDate.toLocaleDateString('en-US', { timeZone: 'UTC' });
+        var dueDate = new Date(checkout.dueDate);
+        dueDate = dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' });
 
-    $('#checkoutList').append(newCheckout);
+        var newCheckout = $('<li class="checkout"><strong>Name: </strong> ' 
+            + checkout.userName + ' <strong>Approved By: </strong> ' 
+            + checkout.mgrName + '<strong>Checked Out: </strong>' 
+            + checkoutDate + '<strong>Due: </strong>' 
+            + dueDate + '<strong>Returned: </strong>'
+            + returnDate + '</li>');
+
+        $('#checkoutList').append(newCheckout);
+    }
 }

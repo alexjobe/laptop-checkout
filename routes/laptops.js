@@ -41,6 +41,18 @@ router.get("/:laptopId", function(req, res){
     });
 });
 
+// LAPTOP GET HISTORY - Get a laptop's history
+router.get("/:laptopId/history", function(req, res){
+    // Mongo populates currentCheckout based on ObjectID
+    db.Laptop.findById(req.params.laptopId).populate('checkoutHistory')
+    .then(function(foundLaptop){
+        res.send(foundLaptop.checkoutHistory);
+    })
+    .catch(function(err) {
+        res.send(err);
+    });
+});
+
 // LAPTOP UPDATE - Update a laptop
 router.put("/:laptopId", function(req, res){
     // Mongo populates currentCheckout based on ObjectID
