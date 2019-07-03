@@ -3,11 +3,27 @@ How To Install
 Install NodeJS
 	https://nodejs.org/en/download/
 
-Install MongoDB
-	https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#install-mdb-edition
-
 Run commands in root folder (you may need to update PATH to include nodejs):
 	npm install
 	node index.js
 
-Connect to localhost:3000 in browser
+------------ Electron ------------
+
+Electron will launch the app in its own window, so there is no need to use a browser. Electron is a framework for 
+creating native applications with web technologies like JavaScript, HTML, and CSS.
+
+Electron Packager can be used to create Windows, Mac, and Linux executables. For more information, check out:
+	https://www.christianengvall.se/electron-packager-tutorial/
+
+To disable Electron, open package.json and change "main" to "app.js", and "start" to "node ." Then connect to localhost:3000 in a browser.
+
+
+--------- Database Set-Up ---------
+
+You do not need to install MongoDB for this test app: it will connect to a test database on MongoLab. However, eventually
+you will want to set up a permanent database. The database location is specified in "models/index.js"
+
+How To Install MongoDB Locally
+	https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#install-mdb-edition
+
+This app uses Mongoose to model data: schemas are defined under models (laptop.js and checkout.js)

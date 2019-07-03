@@ -1,6 +1,7 @@
 var laptopId; // A variable to hold the currently selected laptopId
-var currentLaptop;
+var currentCheckoutId; // A variable to hold the currently selected checkoutId
 
+// Initialize app
 $(document).ready(function(){
 
     disableBackButton();
@@ -14,7 +15,49 @@ $(document).ready(function(){
 
 });
 
-// Disables browser back button
+// ----------------------------------------------- //
+// ----------- API Helper Functions -------------- //
+// ----------------------------------------------- //
+
+function getCurrentLaptopURL() {
+    var laptopURL = "/api/laptops/" + laptopId;
+    return laptopURL;
+}
+
+function getCurrentCheckoutURL() {
+    var checkoutURL = '/api/checkouts/' + currentCheckoutId;
+    return checkoutURL;
+}
+
+function getCurrentLaptop() {
+    return $.getJSON(getCurrentLaptopURL());
+}
+
+function getAllLaptops() {
+    return $.getJSON("/api/laptops");
+}
+
+function getCurrentCheckout() {
+    return $.getJSON(getCurrentCheckoutURL());
+}
+
+// ----------------------------------------------- //
+// -------------- General Functions -------------- //
+// ----------------------------------------------- //
+
+// Shows html elements that are used in laptops view, and hides elements that are used in checkout view
+function showLaptopsView() {
+    $('#laptopView').show();
+    $('#checkoutView').hide();
+}
+
+// Shows html elements that are used in checkout view, and hides elements that are used in laptops view
+function showCheckoutView() {
+    $('#laptopView').hide();
+    $('#checkoutView').show();
+}
+
+// Disables browser back button, because this is a single-page app
 function disableBackButton() {
     window.history.pushState(null, "", window.location.href);
     window.onpopstate = function () {
@@ -22,7 +65,7 @@ function disableBackButton() {
     };
 }
 
-// Main view - Displays a list of all laptops
+// Initialize laptops view - displays a list of all laptops
 function initializeLaptopsView() {
     updateAllLaptops();
 
@@ -30,25 +73,26 @@ function initializeLaptopsView() {
         e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
     });
 
-    $('#laptopInput').submit(function (event) {
+    $('#laptopInput').submit(function (e) {
         createLaptop();
     });
 
-    $('#laptopList').on('click', 'span', function(event){
-        event.stopPropagation(); // If user clicks on span, do not trigger click on li
+    // Each <li> contains a span with an X in it. When the X is clicked, remove the laptop
+    $('#laptopList').on('click', 'span', function(e){
+        e.stopPropagation(); // If user clicks on span, do not trigger click on li
         removeLaptop($(this).parent());
     });
 
     addLaptopClickHandlers();
 }
 
-// Checkout view - Displays checkout information for a single laptop
+// Initialize checkout view - displays checkout information for a single laptop
 function initializeCheckoutView() {
     $('#homeButton').submit(function (e) {
         e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
         showLaptopsView();
     });
-    
+
     $('#checkoutInput').submit(function (e) {
         e.preventDefault();
         createCheckout();
@@ -59,34 +103,13 @@ function initializeCheckoutView() {
         returnLaptop();
     });
 
-    $('#checkoutList').on('click', 'span', function(event){
-        event.stopPropagation(); // If user clicks on span, do not trigger click on li
+    // Each <li> contains a span with an X in it. When the X is clicked, remove the checkout from the checkout history list
+    $('#checkoutList').on('click', 'span', function(e){
+        e.stopPropagation(); // If user clicks on span, do not trigger click on li
         removeCheckoutFromHistory($(this).parent());
     });
 }
 
-function showLaptopsView() {
-    $('#laptopView').show();
-    $('#checkoutView').hide();
-}
-
-function showCheckoutView() {
-    $('#laptopView').hide();
-    $('#checkoutView').show();
-}
-
-function removeLaptop(laptop) {
-    var clickedId = laptop.data('id');
-    var deleteURL = '/api/laptops/' + clickedId;
-    $.ajax({
-        url: deleteURL,
-        type: 'DELETE'
-    })
-    .then(function(){
-        updateAllLaptops();
-        showLaptopsView();
-    });
-}
 
 // ----------------------------------------------- //
 // ----------- Laptop View Functions ------------- //
@@ -95,7 +118,7 @@ function removeLaptop(laptop) {
 function updateAllLaptops() {
     $('#laptopList').html('');
     // Add all laptops to the page
-    $.getJSON("/api/laptops")
+    getAllLaptops()
     .then(function(laptops){
         laptops.forEach(function(laptop){
             addLaptop(laptop);
@@ -105,26 +128,30 @@ function updateAllLaptops() {
 
 function addLaptop(laptop) {
     // Add a laptop to the page
-    var newLaptop = $('<li class="laptop"><strong>Laptop:</strong> ' 
+    var laptopListItem = $('<li class="laptop"><strong>Laptop:</strong> ' 
         + laptop.name + ' <strong>Serial Number:</strong> ' 
         + laptop.serialNum + '<span>X</span></li>');
 
+    // If the laptop's current checkout is overdue, assign it the class 'overdue'
     if(laptop.currentCheckout){
         var dueDate = new Date(laptop.currentCheckout.dueDate);
         if(dueDate < Date.now()){
-            newLaptop.addClass('overdue');
+            laptopListItem.addClass('overdue');
         }
     }
 
-    newLaptop.data('id', laptop._id); // jQuery data attribute, does not show up in html
+    laptopListItem.data('id', laptop._id); // jQuery data attribute, does not show up in html. Used to delete when X is clicked.
 
-    $('#laptopList').append(newLaptop);
+    $('#laptopList').append(laptopListItem);
 }
 
 function createLaptop() {
     // Send request to create a new laptop
     var laptopNameInput = $('#laptopNameInput').val();
     var laptopNumInput = $('#laptopNumInput').val();
+    // Clear input
+    $('#laptopNameInput').val('');
+    $('#laptopNumInput').val('');
 
     $.post('/api/laptops', {name: laptopNameInput, serialNum: laptopNumInput})
     .then(function(newLaptop){
@@ -143,8 +170,21 @@ function addLaptopClickHandlers() {
         showCheckoutView();
 
         // Display current checkout of clicked laptop
-        $.getJSON("/api/laptops/" + laptopId)
+        getCurrentLaptop()
         .then(updateCurrentCheckout);
+    });
+}
+
+// Called when the user clicks the X on the laptop <li>
+function removeLaptop(laptop) {
+    var clickedId = laptop.data('id');
+    var deleteURL = '/api/laptops/' + clickedId;
+    $.ajax({
+        url: deleteURL,
+        type: 'DELETE'
+    })
+    .then(function(){
+        updateAllLaptops();
     });
 }
 // ----------------------------------------------- //
@@ -152,17 +192,20 @@ function addLaptopClickHandlers() {
 // ----------------------------------------------- //
 
 function createCheckout() {
-    // Send request to create a new checkout
     var userNameInput = $('#userNameInput').val();
     var mgrNameInput = $('#mgrNameInput').val();
     var dueDateInput = $('#dueDateInput').val();
+    // Clear input
+    $('#userNameInput').val('');
+    $('#mgrNameInput').val('');
+    $('#dueDateInput').val('');
 
+    // Send request to create a new checkout
     $.post('/api/checkouts', {userName: userNameInput, mgrName: mgrNameInput, dueDate: dueDateInput, laptop: laptopId})
     .then(function(newCheckout){
         // Add the checkout to laptop as currentCheckout
-        var updateURL = '/api/laptops/' + laptopId;
         return $.ajax({
-            url: updateURL,
+            url: getCurrentLaptopURL(),
             type: 'PUT',
             data: {currentCheckout: newCheckout._id}
         });
@@ -209,28 +252,28 @@ function showAsCheckedOut(laptop) {
     '<br>Due Date: ' + dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' }));
 }
 
+// Returns the laptop, clearing its current checkout 
 function returnLaptop() {
-    var updateURL = '/api/laptops/' + laptopId;
-    var currentCheckout;
 
-    $.getJSON(updateURL)
+    getCurrentLaptop()
     .then(function(laptop) {
-        currentCheckout = laptop.currentCheckout._id;
+        currentCheckoutId = laptop.currentCheckout._id;
         return $.ajax({
-            url: updateURL,
+            url: getCurrentLaptopURL(),
             type: 'PUT',
-            data: {currentCheckout: {}}
+            data: {currentCheckout: {}} // Sets currentCheckout to null
         })
     })
     .then(function(laptop){
-        updateURL = '/api/checkouts/' + currentCheckout;
         return $.ajax({
-            url: updateURL,
+            url: getCurrentCheckoutURL(),
             type: 'PUT',
-            data: {returnDate: Date.now()}
+            data: {returnDate: Date.now()} // Set laptop's returnDate to the day it was returned
         })
         .then(function(){
+            // Update page
             updateCurrentCheckout(laptop);
+            updateAllLaptops();
         })
     })
     .catch(function(err){
@@ -241,13 +284,15 @@ function returnLaptop() {
 function updateCheckoutHistory() {
     $('#checkoutList').html('');
     // Add all checkouts to the page
-    var getURL = '/api/laptops/' + laptopId + '/history';
-    $.get(getURL)
+    var historyURL = getCurrentLaptopURL() + '/history';
+    $.get(historyURL)
     .then(function(checkoutHistory){
-        $('#checkoutHistoryTitle').html('Checkout History');
+        // Add each checkout in laptop's checkoutHistory to page
         checkoutHistory.forEach(function(checkout){
             addCheckoutToHistory(checkout);
         });
+
+        // If there are checkouts to display, make 'Checkout History' title visible
         if($('#checkoutList li').length > 0){
             $('#checkoutHistoryTitle').html('Checkout History');
         } else {
@@ -276,43 +321,48 @@ function addCheckoutToHistory(checkout) {
             + dueDate + '<strong>Returned: </strong>'
             + returnDate + '<span>X</span></li>');
 
-            newCheckout.data('id', checkout._id); // jQuery data attribute, does not show up in html
+            newCheckout.data('id', checkout._id); // jQuery data attribute, does not show up in html. Used to delete when X is clicked.
 
         $('#checkoutList').append(newCheckout);
     }
 }
 
+// When X is clicked, remove checkout from checkoutHistory. It must be removed from both the laptop's checkoutHistory array, and
+// from the checkouts collection
 function removeCheckoutFromHistory(checkout) {
     var clickedId = checkout.data('id');
     var deleteURL = '/api/checkouts/' + clickedId;
-    var historyURL = '/api/laptops/' + laptopId + '/history';
+    var historyURL = getCurrentLaptopURL() + '/history';
 
     $.getJSON(historyURL)
     .then(function(checkoutHistory){
+        // Create new checkoutHistory array, excluding the checkout that is being deleted
         updatedHistory = checkoutHistory.filter(function(checkout) {
             if(checkout._id == clickedId) {
                 return false;
             }
             else { return true; }
         });
-        console.log(updatedHistory);
         return updatedHistory;
     })
-    .then(function(checkoutHistory) {
-        if(checkoutHistory == []){checkoutHistory = Array[null]}
+    .then(function(updatedHistory) {
+        if(updatedHistory == []){updatedHistory = Array[null]} // if updatedHistory is empty, set to a null array (required for Mongo)
+        // Update laptop's checkoutHistory
         return $.ajax({
             url: historyURL,
             type: 'PUT',
-            data: {checkoutHistory: checkoutHistory}
+            data: {checkoutHistory: updatedHistory}
         });
     })
     .then(function(){
+        // Delete checkout from checkouts collection
         return $.ajax({
             url: deleteURL,
             type: 'DELETE'
         })
     })
     .then(function(){
+        // Update page
         updateCheckoutHistory();
     })
     .catch(function(err){
