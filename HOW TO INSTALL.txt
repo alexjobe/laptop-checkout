@@ -1,4 +1,4 @@
-How To Install
+-------------------------------------------------------------- How To Install -----------------------------------------------------------
 
 Install NodeJS
 	https://nodejs.org/en/download/
@@ -7,10 +7,10 @@ Run commands in root folder (you may need to update PATH to include nodejs):
 	npm install
 	node index.js
 
------------- Electron ------------
+---------------------------------------------------------------- Electron ----------------------------------------------------------------
 
-Electron will launch the app in its own window, so there is no need to use a browser. Electron is a framework for 
-creating native applications with web technologies like JavaScript, HTML, and CSS.
+Electron will launch the app in its own window, so there is no need to use a browser. Electron is a framework for creating native 
+applications with web technologies like JavaScript, HTML, and CSS.
 
 Electron Packager can be used to create Windows, Mac, and Linux executables. For more information, check out:
 	https://www.christianengvall.se/electron-packager-tutorial/
@@ -18,12 +18,18 @@ Electron Packager can be used to create Windows, Mac, and Linux executables. For
 To disable Electron, open package.json and change "main" to "app.js", and "start" to "node ." Then connect to localhost:3000 in a browser.
 
 
---------- Database Set-Up ---------
+------------------------------------------------------------- Database Set-Up -------------------------------------------------------------
 
-You do not need to install MongoDB for this test app: it will connect to a test database on MongoLab. However, eventually
-you will want to set up a permanent database. The database location is specified in "models/index.js"
+You do not need to install MongoDB for this test app: it will connect to a test database on MongoLab. However, eventually you will want to 
+set up a permanent database. The database location is specified in "models/index.js" ('mongodb://localhost/laptop-checkout-api' by default)
 
 How To Install MongoDB Locally
 	https://docs.mongodb.com/manual/tutorial/install-mongodb-on-windows/#install-mdb-edition
 
 This app uses Mongoose to model data: schemas are defined under models (laptop.js and checkout.js)
+
+---------------------------------------------------------------- Node API -----------------------------------------------------------------
+
+The entry point for the node.js app is app.js, and routes are defined in the routes folder. You can access the API in the browser by 
+typing "/api/laptops" and "/api/checkouts". For example, to access a specific laptop, type "http://localhost:3000/api/laptops/_id", where 
+_id is the ObjectId (primary key) for that laptop.
