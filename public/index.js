@@ -5,20 +5,21 @@ var currentCheckoutId; // A variable to hold the currently selected checkoutId
 $(document).ready(function(){
     // Load scripts, then initialize views
     $.when(
-        $.getScript( "/helpers.js" ),
-        $.getScript( "/checkouts.js" ),
-        $.getScript( "/laptops.js" ),
+        $.getScript( "/helper.js" ),
+        $.getScript( "/checkout.js" ),
+        $.getScript( "/laptop.js" ),
         $.Deferred(function( deferred ){
             $( deferred.resolve );
         })
     ).done(function(){
-        disableBackButton(); // helpers.js
+
+        Helper.disableBackButton();
 
         // Show laptops view
-        showLaptopsView(); // helpers.js
+        Helper.showLaptopsView();
         
         // Initialize views
-        initializeLaptopsView(); // laptops.js
-        initializeCheckoutView(); // checkouts.js
+        Laptop.initializeLaptopsView();
+        Checkout.initializeCheckoutView();
     });
 });
