@@ -89,8 +89,12 @@ input {
 	color: #34495e;
 }
 
+.leftAlign {
+    text-align: left;
+}
+
 #homeButton {
-    float: left;
+    text-align: left;
     transition-duration: 0.3s;
 }
 
