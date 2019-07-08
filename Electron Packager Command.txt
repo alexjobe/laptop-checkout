@@ -1,1 +1,0 @@
-electron-packager ../laptop-checkout laptop-checkout --platform=win32 --arch=all

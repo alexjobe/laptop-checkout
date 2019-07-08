@@ -3,7 +3,8 @@
   <head>
 		<meta charset="UTF-8">
 		<base href="/">
-		<link rel="stylesheet" href="app.css" type="text/css" />
+    <link rel="stylesheet" href="app.css" type="text/css" />
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" type="text/css">
 		<script
 			src="https://code.jquery.com/jquery-3.4.1.min.js"
 			integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
@@ -13,7 +14,8 @@
   </head>
   <body>
     <section id="laptopView">
-      <h1>Laptop Checkout</h1>
+      <!-- Import font-awesome icon -->
+      <h1><i class="fa fa-laptop"></i> laptop<span>checkout</span></h1> 
       <ul id="laptopList"></ul>
 
       <form id="laptopInput">
@@ -24,14 +26,11 @@
     </section>
 
     <section id="checkoutView">
-      <form id="homeButton">
-        <button>Home</button>
-      </form>
+      <i id="homeButton" class="fa fa-arrow-left fa-2x"></i>
 
       <h1></h1>
 
       <div id="currentCheckout"></div>
-      <br>
 
       <form id="checkoutInput">
         <input id="userNameInput" type="text" placeholder="Name">

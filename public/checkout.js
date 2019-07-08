@@ -6,10 +6,10 @@ class Checkout {
 
     // Initialize checkout view - displays checkout information for a single laptop
     static initializeCheckoutView() {
-        $('#homeButton').submit(function (e) {
+        $('#homeButton').on('click', function(e){
             e.preventDefault(); // Prevent form from reloading the page on submit, so ajax calls work correctly
             Helper.showLaptopsView();
-        });
+        })
 
         $('#checkoutInput').submit(function (e) {
             e.preventDefault();
@@ -82,7 +82,7 @@ class Checkout {
     static showAsAvailable() {
         $('#checkoutInput').show();
         $('#returnButton').hide();
-        $('#currentCheckout').html('<h3>Available</h3>');
+        $('#currentCheckout').html('<h3 id="available">Available</h3>');
     }
 
     static showAsCheckedOut(laptop) {
@@ -91,10 +91,10 @@ class Checkout {
 
         var dueDate = new Date(laptop.currentCheckout.dueDate);
         var checkoutDate = new Date(laptop.currentCheckout.checkoutDate);
-        $('#currentCheckout').html('Name: ' + laptop.currentCheckout.userName + 
+        $('#currentCheckout').html('<h3>Checked out to: </h3><text>Name: ' + laptop.currentCheckout.userName + 
         '<br>Approved By: ' + laptop.currentCheckout.mgrName +
         '<br>Checked Out: ' + checkoutDate.toLocaleDateString('en-US', { timeZone: 'UTC' }) +
-        '<br>Due Date: ' + dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' }));
+        '<br>Due Date: ' + dueDate.toLocaleDateString('en-US', { timeZone: 'UTC' }) + '</text>');
     }
 
     // Returns the laptop, clearing its current checkout 

@@ -1,0 +1,18 @@
+V4 Changes
+- Split JS functions into separate files and classes
+- Update CSS
+- Include Font Awesome icons
+
+-------------------------------------------------------------------------------------------------------
+
+V3 Changes
+
+- Add return button that clears currentCheckout and sets isCheckedOut to false
+- Display checkout history
+- Add ability to remove a checkout from laptop checkoutHistory
+- Add delete 'X' spans to laptop list and checkout list
+
+V2 Changes
+
+- Laptops that are overdue are now highlighted in red
+- Add laptop delete button: when a laptop is deleted, deletes all checkouts associated with that laptop
