@@ -1,6 +1,0 @@
-Running this command with Electron Packager will create 32-bit and 64-bit Windows applications:
-
-	electron-packager ../laptop-checkout laptop-checkout --platform=win32 --arch=all
-
-For more information, check out:
-	https://www.christianengvall.se/electron-packager-tutorial/
