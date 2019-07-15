@@ -133,6 +133,7 @@ class Checkout {
         $.get(historyURL)
         .then(function(checkoutHistory){
             // Add each checkout in laptop's checkoutHistory to page
+            console.log(checkoutHistory);
             checkoutHistory.forEach(function(checkout){
                 Checkout.addCheckoutToHistory(checkout);
             });
@@ -176,33 +177,18 @@ class Checkout {
     // from the checkouts collection
     static removeCheckoutFromHistory(checkout) {
         var clickedId = checkout.data('id');
-        var deleteURL = '/api/checkouts/' + clickedId;
-        var historyURL = Helper.getCurrentLaptopURL() + '/history';
-
-        $.getJSON(historyURL)
-        .then(function(checkoutHistory){
-            // Create new checkoutHistory array, excluding the checkout that is being deleted
-            var updatedHistory = checkoutHistory.filter(function(checkout) {
-                if(checkout._id == clickedId) {
-                    return false;
-                }
-                else { return true; }
-            });
-            return updatedHistory;
-        })
-        .then(function(updatedHistory) {
-            if(updatedHistory == []){updatedHistory = Array[null]} // if updatedHistory is empty, set to a null array (required for Mongo)
-            // Update laptop's checkoutHistory
-            return $.ajax({
-                url: historyURL,
-                type: 'PUT',
-                data: {checkoutHistory: updatedHistory}
-            });
+        var checkoutDeleteURL = '/api/checkouts/' + clickedId;
+        var historyDeleteURL = Helper.getCurrentLaptopURL() + '/history/' + clickedId;
+    
+        // Delete checkout from laptop's checkout history
+        $.ajax({
+            url: historyDeleteURL,
+            type: 'DELETE'
         })
         .then(function(){
             // Delete checkout from checkouts collection
             return $.ajax({
-                url: deleteURL,
+                url: checkoutDeleteURL,
                 type: 'DELETE'
             })
         })
